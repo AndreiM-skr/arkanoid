@@ -5,6 +5,7 @@ const KEYS = {
 };
 
 let game = {
+    running: true,
     ctx: null,
 
     platform: null,
@@ -112,13 +113,16 @@ let game = {
 },
 
     run() {
-        window.requestAnimationFrame(() => {
+        if (this.running) {
+            window.requestAnimationFrame(() => {
 
-            this.update();
-            this.render();
-            this.run();
+                this.update();
+                this.render();
+                this.run();
 
-        });
+            });
+
+        }
     },
 
     render() {
@@ -260,7 +264,11 @@ collideWorldBounds() {
 
     } else if (ballBottom > worldBottom) {
 
-        console.log('game over');
+        game.running = false;
+
+        alert("Blu proigrali");
+
+        window.location.reload();
 
     }
 },
@@ -271,6 +279,10 @@ bumpBlock(block) {
 },
 
 bumpPlatform(platform) {
+
+    if (platform.dx) {
+        this.dx += platform.dx;
+    }
 
     if (this.dy > 0) {
 
