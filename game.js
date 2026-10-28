@@ -12,6 +12,7 @@ let game = {
     ball: null,
 
     blocks: [],
+    score: 0,
     rows: 4,
     cols: 8,
 
@@ -96,11 +97,22 @@ let game = {
 
     },
 
+    addScore() {
+
+        ++this.score;
+
+        if (this.score >= this.blocks.length) {
+            this.end("Вы победили");
+        }
+
+},
+
     collideBlocks() {
         for (let block of this.blocks) {
 
             if (block.active && this.ball.collide(block)) {
                 this.ball.bumpBlock(block);
+                this.addScore();
         }
 
     }
@@ -172,6 +184,16 @@ let game = {
             this.create();
             this.run();
         });
+    },
+
+    end(message) {
+
+        this.running = false;
+
+        alert(message);
+
+        window.location.reload();
+
     },
 
     random(min, max) {
@@ -264,11 +286,7 @@ collideWorldBounds() {
 
     } else if (ballBottom > worldBottom) {
 
-        game.running = false;
-
-        alert("Blu proigrali");
-
-        window.location.reload();
+            game.end("Вы проиграли");    
 
     }
 },
