@@ -302,3 +302,162 @@ test("Platvormi vasak piir", game => {
     equal(game.platform.dx, 0);
 });
 
+// =====================================
+// TEST 19
+// Parema piiri ületamine peatab platvormi.
+// =====================================
+
+test("Platvormi parem piir", game => {
+    game.platform.x = 540;
+
+    game.platform.dx = 6;
+
+    game.platform.collideWorldBounds();
+
+    equal(game.platform.dx, 0);
+});
+
+
+// =====================================
+// TEST 20
+// Alla liikuv pall põrkab platvormi keskelt otse üles.
+// =====================================
+
+test("Platvormilt põrkamine", game => {
+    game.ball.dy = 3;
+    game.ball.dx = 2;
+
+    game.ball.bumpPlatform(game.platform);
+
+    equal(game.ball.dy, -3);
+    equal(game.ball.dx, 0);
+});
+
+// =====================================
+// TEST 21
+// Vasak sein suunab palli paremale ja mängib heli ühe korra.
+// =====================================
+
+test("Palli vasak piir", game => {
+    let sounds = 0;
+
+    game.sounds.bump = {
+        play() {
+            sounds++;
+        }
+    };
+
+    game.ball.x = 1;
+    game.ball.dx = -3;
+
+    game.ball.collideWorldBounds();
+
+    equal(game.ball.x, 0);
+    equal(game.ball.dx, 3);
+    equal(sounds, 1);
+});
+
+// =====================================
+// TEST 22
+// Parem sein suunab palli vasakule.
+// =====================================
+
+test("Palli parem piir", game => {
+    game.sounds.bump = {
+        play() {}
+    };
+
+    game.ball.x = 620;
+    game.ball.dx = 3;
+
+    game.ball.collideWorldBounds();
+
+    equal(game.ball.x, 620);
+    equal(game.ball.dx, -3);
+});
+
+// =====================================
+// TEST 23
+// Ülemine sein suunab palli alla.
+// =====================================
+
+test("Palli ülemine piir", game => {
+    game.sounds.bump = {
+        play() {}
+    };
+
+    game.ball.y = 1;
+    game.ball.dy = -3;
+
+    game.ball.collideWorldBounds();
+
+    equal(game.ball.y, 0);
+    equal(game.ball.dy, 3);
+});
+
+// =====================================
+// TEST 24
+// Alumisest piirist väljumine lõpetab mängu.
+// =====================================
+
+test("Kaotus", game => {
+    let endings = 0;
+
+    game.end = () => {
+        endings++;
+    };
+
+    game.ball.y = 340;
+    game.ball.dy = 3;
+
+    game.ball.collideWorldBounds();
+
+    equal(endings, 1);
+});
+
+// =====================================
+// TEST 25
+// Aktiivse ploki tabamine annab punkti ja heli;
+// sama plokk teist punkti ei anna.
+// =====================================
+
+test("Ploki tabamine", game => {
+    const block = {
+        x: 330,
+        y: 290,
+        width: 60,
+        height: 20,
+        active: true
+    };
+
+    game.blocks = [
+        block,
+        {
+            x: 10,
+            y: 10,
+            width: 60,
+            height: 20,
+            active: true
+        }
+    ];
+
+    game.ball.dy = 3;
+
+    let sounds = 0;
+
+    game.sounds.bump = {
+        play() {
+            sounds++;
+        }
+    };
+
+    game.collideBlocks();
+    game.collideBlocks();
+
+    equal(block.active, false);
+    equal(game.blocks[1].active, true);
+    equal(game.score, 1);
+    equal(game.ball.dy, -3);
+    equal(sounds, 1);
+});
+
