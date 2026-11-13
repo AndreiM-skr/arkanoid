@@ -207,3 +207,98 @@ test("Platvormi peatamine", game => {
     equal(game.platform.dx, 0);
 });
 
+// =====================================
+// TEST 13
+// Enne laskmist liigub pall koos platvormiga.
+// =====================================
+
+test("Pall platvormil", game => {
+    game.platform.dx = 6;
+
+    game.platform.move();
+
+    equal(game.platform.x, 286);
+    equal(game.ball.x, 326);
+});
+
+
+// =====================================
+// TEST 14
+// Pärast palli vabastamist ei liiguta platvorm enam palli.
+// =====================================
+
+test("Vaba pall", game => {
+    game.platform.ball = null;
+
+    game.platform.dx = -6;
+
+    game.platform.move();
+
+    equal(game.platform.x, 274);
+    equal(game.ball.x, 320);
+});
+
+// =====================================
+// TEST 15
+// fire() käivitab palli ainult esimesel vajutusel.
+// =====================================
+
+test("Ühekordne lask", game => {
+    let starts = 0;
+
+    game.ball.start = () => {
+        starts++;
+    };
+
+    game.platform.fire();
+    game.platform.fire();
+
+    equal(starts, 1);
+    equal(game.platform.ball, null);
+});
+
+// =====================================
+// TEST 16
+// Asendame juhuarvu kindla väärtusega, et palli start oleks korratav.
+// =====================================
+
+test("Palli start", game => {
+    game.random = (min, max) => {
+        equal(min, -3);
+        equal(max, 3);
+
+        return 2;
+    };
+
+    game.ball.start();
+
+    equal(game.ball.dy, -3);
+    equal(game.ball.dx, 2);
+});
+
+// =====================================
+// TEST 17
+// Puutepunkti nihe on vasakul -1, keskel 0 ja paremal 1.
+// =====================================
+
+test("Puutepunkt", game => {
+    equal(game.platform.getTouchOffset(280), -1);
+    equal(game.platform.getTouchOffset(330), 0);
+    equal(game.platform.getTouchOffset(380), 1);
+});
+
+// =====================================
+// TEST 18
+// Vasaku piiri ületamine peatab platvormi.
+// =====================================
+
+test("Platvormi vasak piir", game => {
+    game.platform.x = 0;
+
+    game.platform.dx = -6;
+
+    game.platform.collideWorldBounds();
+
+    equal(game.platform.dx, 0);
+});
+
