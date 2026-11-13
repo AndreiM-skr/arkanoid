@@ -134,3 +134,76 @@ test("Kokkupõrget pole", game => {
     equal(game.ball.collide(block), false);
 });
 
+// =====================================
+// TEST 8
+// Ainult servade puudutamine ei ole veel kattumine.
+// =====================================
+
+test("Servade puudutus", game => {
+    const block = {
+        x: 340,
+        y: 280,
+        width: 60,
+        height: 20
+    };
+
+    equal(game.ball.collide(block), false);
+});
+
+// =====================================
+// TEST 9
+// Kokkupõrke kontroll arvestab palli järgmist asukohta.
+// =====================================
+
+test("Järgmine asukoht", game => {
+    const block = {
+        x: 342,
+        y: 280,
+        width: 60,
+        height: 20
+    };
+
+    game.ball.dx = 3;
+
+    equal(game.ball.collide(block), true);
+});
+
+// =====================================
+// TEST 10
+// Plokilt põrkamine muudab vertikaalset suunda ja eemaldab ploki mängust.
+// =====================================
+
+test("Plokilt põrkamine", game => {
+    const block = { active: true };
+
+    game.ball.dy = -3;
+
+    game.ball.bumpBlock(block);
+
+    equal(game.ball.dy, 3);
+    equal(block.active, false);
+});
+
+// 11. Vasak- ja parempoole klahv määravad platvormi liikumissuuna.
+
+test("Platvormi suund", (game, KEYS) => {
+    game.platform.start(KEYS.LEFT);
+    equal(game.platform.dx, -6);
+
+    game.platform.start(KEYS.RIGHT);
+    equal(game.platform.dx, 6);
+});
+
+// =====================================
+// TEST 12
+// Peatab platvormi.
+// =====================================
+
+test("Platvormi peatamine", game => {
+    game.platform.dx = 6;
+
+    game.platform.stop();
+
+    equal(game.platform.dx, 0);
+});
+
